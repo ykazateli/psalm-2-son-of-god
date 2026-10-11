@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Псалом 2: Сын Божий | Указатели</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Comic Neue', 'Comic Sans MS', sans-serif;
+            background: #b48a62;
+            background-image: radial-gradient(circle at 10% 20%, rgba(218, 178, 115, 0.08) 0%, rgba(0,0,0,0) 50%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 850px;
+            width: 100%;
+            background: #fff6e8;
+            border-radius: 48px;
+            box-shadow: 0 20px 35px rgba(100, 70, 30, 0.15);
+            padding: 30px 30px 40px;
+            border: 1px solid #f0dbb4;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header .studio-link {
+            display: inline-block;
+            font-size: 1rem;
+            color: #4A90D9;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid #4A90D9;
+            padding-bottom: 2px;
+            transition: 0.2s;
+        }
+
+        .header .studio-link:hover {
+            color: #2c6aa0;
+            border-bottom-color: #2c6aa0;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #4a3520;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            color: #7a5a3a;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .screen {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .screen h2 {
+            font-size: 1.5rem;
+            color: #4a3520;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        /* ===== ПЕРСОНАЖ (как в первом уроке) ===== */
+        .character-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .character-wrapper img {
+            width: 200px;
+            height: auto;
+            display: block;
+        }
+
+        /* ===== РЕЧЬ КРИСТИНЫ ===== */
+        .speech-bubble {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 20px 25px;
+            border: 1px solid #e6dacb;
+            position: relative;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #3e2c1a;
+            text-align: left;
+        }
+
+        .speech-bubble .name {
+            font-weight: 700;
+            color: #b48a62;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* ===== ТЕКСТ ПСАЛМА ===== */
+        .psalm-text {
+            font-size: 1.05rem;
+            line-height: 2.2;
+            color: #3e2c1a;
+            background: #ffffff;
+            padding: 20px 25px;
+            border-radius: 20px;
+            border: 1px solid #e6dacb;
+            margin-bottom: 20px;
+        }
+
+        .psalm-text .verse-number {
+            font-size: 0.7rem;
+            color: #b48a62;
+            font-weight: 700;
+            vertical-align: super;
+            margin-right: 4px;
+        }
+
+        .word-wrapper {
+            display: inline-block;
+            position: relative;
+        }
+
+        .clickable-word {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .clickable-word:hover {
+            background: #e6dacb;
+        }
+
+        .clickable-word.found {
+            background: #ffcdd2;
+            color: #8a1a1a;
+            text-decoration: underline;
+            text-decoration-color: #c62828;
+            text-underline-offset: 4px;
+        }
+
+        .word-wrapper .marker {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .word-wrapper .marker.show {
+            opacity: 1;
+        }
+
+        .counter {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px;
+            background: #f4ede4;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .counter span {
+            color: #b48a62;
+        }
+
+        /* ===== ТАБЛИЦА ===== */
+        .nt-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .nt-table th {
+            background: #b48a62;
+            color: #fff;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .nt-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0e6d8;
+            color: #3e2c1a;
+            vertical-align: top;
+        }
+
+        .nt-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .nt-table .word-cell {
+            font-weight: 700;
+            color: #b48a62;
+            white-space: nowrap;
+        }
+
+        /* ===== РАЗМЫШЛЕНИЕ ===== */
+        .question-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e6dacb;
+            margin-bottom: 20px;
+        }
+
+        .question-box .q {
+            font-weight: 600;
+            color: #4a3520;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .question-box .answer {
+            display: none;
+            margin-top: 10px;
+            padding: 14px 16px;
+            background: #f4ede4;
+            border-radius: 12px;
+            color: #3e2c1a;
+            line-height: 1.6;
+            border-left: 3px solid #b48a62;
+        }
+
+        .question-box .answer.show {
+            display: block;
+        }
+
+        .reveal-btn {
+            background: #b48a62;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+        .reveal-btn:hover {
+            background: #9a704a;
+            transform: translateY(-2px);
+        }
+
+        /* ===== ВЫВОД ===== */
+        .conclusion-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e6dacb;
+            margin-bottom: 20px;
+        }
+
+        .conclusion-box p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #3e2c1a;
+            margin-bottom: 10px;
+        }
+
+        .conclusion-box .final-verse {
+            font-style: italic;
+            color: #b48a62;
+            margin-top: 10px;
+            padding: 15px;
+            background: #f4ede4;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+
+        /* ===== КНОПКИ ===== */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons button {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        button {
+            background: #b48a62;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #9a704a;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #d5c4b0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.secondary {
+            background: #e6dacb;
+            color: #4a3520;
+        }
+
+        button.secondary:hover {
+            background: #d5c4b0;
+        }
+
+        /* ===== ФУТЕР ===== */
+        .footer {
+            margin-top: 30px;
+            border-top: 1px solid #e6dacb;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .footer .studio-link {
+            color: #4A90D9;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #4A90D9;
+            padding-bottom: 2px;
+        }
+
+        .footer .small-note {
+            display: block;
+            margin-top: 6px;
+            color: #a58d7a;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            .app-container { padding: 20px 15px; }
+            .header h1 { font-size: 1.6rem; }
+            .character-wrapper img { width: 150px; }
+            .speech-bubble { font-size: 1rem; padding: 15px 18px; }
+            .psalm-text { font-size: 0.95rem; padding: 15px 18px; line-height: 2.2; }
+            .word-wrapper .marker { font-size: 0.9rem; top: -22px; }
+            .nt-table { font-size: 0.85rem; }
+            .nt-table th, .nt-table td { padding: 8px 6px; }
+            .nav-buttons { flex-direction: column; }
+            button { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- ШАПКА -->
+        <div class="header">
+            <a href="https://vk.com/ykazateli_of_christ" target="_blank" class="studio-link">
+                🕯️ Библейская студия анимации «Указатели»
+            </a>
+            <h1>📖 Псалом 2: Сын Божий</h1>
+            <p class="subtitle">Христос в Псалмах — урок 1</p>
+        </div>
+
+        <!-- ЭКРАН 1: ВСТУПЛЕНИЕ -->
+        <div id="screen1" class="screen active">
+            <div class="character-wrapper">
+                <img src="kristina-holding.gif" alt="Кристина">
+            </div>
+            <div class="speech-bubble">
+                <span class="name">Кристина:</span>
+                Привет! Мы начинаем наше первое исследование. Сегодня — <strong>Псалом 2</strong>. Это один из самых мессианских псалмов. Я подготовила для тебя задание: найди в тексте слова, которые, как ты думаешь, говорят о Христе. Готов? Тогда начнём!
+            </div>
+            <div style="text-align:center;">
+                <button onclick="goToStep(2)">📖 Читать Псалом</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 2: НАБЛЮДЕНИЕ -->
+        <div id="screen2" class="screen">
+            <h2>👀 Наблюдение</h2>
+
+            <div class="character-wrapper">
+                <img src="kristina-pencil.gif" alt="Кристина с карандашом">
+            </div>
+            <div class="speech-bubble">
+                <span class="name">Кристина:</span>
+                🔑 Нажми на слова, которые, как ты думаешь, говорят о Христе. Подсказка: их <strong>6</strong>.
+            </div>
+
+            <div class="psalm-text" id="psalmText">
+                <span class="verse-number">1</span> Псалом Давида. Зачем мятутся народы, и племена замышляют тщетное?<br>
+                <span class="verse-number">2</span> Восстают цари земли, и князья совещаются вместе против Господа и против <span class="word-wrapper"><span class="clickable-word" data-id="0">Помазанника</span><span class="marker">✏️</span></span> Его.<br>
+                <span class="verse-number">3</span> "Расторгнем узы их, и свергнем с себя оковы их".<br>
+                <span class="verse-number">4</span> Живущий на небесах посмеется, Господь поругается им.<br>
+                <span class="verse-number">5</span> Тогда скажет им во гневе Своем и яростью Своею приведет их в смятение:<br>
+                <span class="verse-number">6</span> "Я помазал <span class="word-wrapper"><span class="clickable-word" data-id="1">Царя</span><span class="marker">✏️</span></span> Моего над Сионом, святою горою Моею;<br>
+                <span class="verse-number">7</span> возвещу определение: Господь сказал Мне: Ты <span class="word-wrapper"><span class="clickable-word" data-id="2">Сын</span><span class="marker">✏️</span></span> Мой; Я ныне родил <span class="word-wrapper"><span class="clickable-word" data-id="3">Тебя</span><span class="marker">✏️</span></span>;<br>
+                <span class="verse-number">8</span> проси у Меня, и дам народы в наследие <span class="word-wrapper"><span class="clickable-word" data-id="4">Тебе</span><span class="marker">✏️</span></span> и пределы земли во владение Тебе;<br>
+                <span class="verse-number">9</span> Ты поразишь их жезлом железным; сокрушишь их, как сосуд горшечника".<br>
+                <span class="verse-number">10</span> Итак вразумитесь, цари; научитесь, судьи земли!<br>
+                <span class="verse-number">11</span> Служите Господу со страхом и радуйтесь с трепетом.<br>
+                <span class="verse-number">12</span> Почтите <span class="word-wrapper"><span class="clickable-word" data-id="5">Сына</span><span class="marker">✏️</span></span>, чтобы Он не прогневался, и чтобы вам не погибнуть в пути [вашем], ибо гнев Его возгорится вскоре. Блаженны все, уповающие на Него.
+            </div>
+
+            <div class="counter">
+                🔑 Найдено: <span id="wordCount">0</span> из 6
+            </div>
+
+            <div class="nav-buttons">
+                <button class="secondary" onclick="goToStep(1)">⬅️ Назад</button>
+                <button onclick="goToStep(3)" id="toStep3" disabled>➡️ Дальше</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 3: СВЯЗЬ С НОВЫМ ЗАВЕТОМ -->
+        <div id="screen3" class="screen">
+            <h2>🔗 Связь с Новым Заветом</h2>
+
+            <div class="character-wrapper">
+                <img src="kristina-holding.gif" alt="Кристина">
+            </div>
+            <div class="speech-bubble">
+                <span class="name">Кристина:</span>
+                Отлично! Ты нашёл все слова. А теперь посмотри, где этот Псалом цитируется в Новом Завете.
+            </div>
+
+            <table class="nt-table">
+                <thead>
+                    <tr>
+                        <th>Слово из Псалма</th>
+                        <th>Где цитируется</th>
+                        <th>Что это значит</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="word-cell">Помазанник (ст. 2)</td>
+                        <td>Деян. 4:26-27</td>
+                        <td>Ирод и Пилат — против Христа</td>
+                    </tr>
+                    <tr>
+                        <td class="word-cell">Сын (ст. 7)</td>
+                        <td>Деян. 13:33; Евр. 1:5; 5:5</td>
+                        <td>Бог называет Иисуса Сыном</td>
+                    </tr>
+                    <tr>
+                        <td class="word-cell">Тебе (ст. 8)</td>
+                        <td>Откр. 2:26-27</td>
+                        <td>Христос получает власть над народами</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="nav-buttons">
+                <button class="secondary" onclick="goToStep(2)">⬅️ Назад</button>
+                <button onclick="goToStep(4)">➡️ Дальше</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 4: РАЗМЫШЛЕНИЕ -->
+        <div id="screen4" class="screen">
+            <h2>🤔 Размышление</h2>
+
+            <div class="character-wrapper">
+                <img src="kristina-holding.gif" alt="Кристина">
+            </div>
+            <div class="speech-bubble">
+                <span class="name">Кристина:</span>
+                Как ты думаешь, почему этот Псалом так важен для нас?
+            </div>
+
+            <div class="question-box">
+                <div class="q">💭 Подумай и ответь:</div>
+                <div class="answer" id="answerText">
+                    <strong>Потому что он показывает, что Христос — Сын Божий</strong> и Царь, Которому покорятся все народы. И этот же Псалом призывает нас доверять Сыну.<br><br>
+                    <em>«Блаженны все, уповающие на Него»</em> (Пс. 2:12)
+                </div>
+                <button class="reveal-btn" onclick="toggleAnswer()">💡 Показать ответ</button>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="secondary" onclick="goToStep(3)">⬅️ Назад</button>
+                <button onclick="goToStep(5)">➡️ Дальше</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 5: ВЫВОД -->
+        <div id="screen5" class="screen">
+            <h2>🕊️ Вывод</h2>
+
+            <div class="character-wrapper">
+                <img src="kristina-holding.gif" alt="Кристина">
+            </div>
+            <div class="speech-bubble">
+                <span class="name">Кристина:</span>
+                Псалом 2 показывает нам Христа как <strong>Сына Божьего</strong> и <strong>Царя</strong>, Которому покорятся все народы. И этот же Псалом призывает нас: <em>«Блаженны все, уповающие на Него»</em> (ст. 12). Доверимся Ему!
+            </div>
+
+            <div class="conclusion-box">
+                <p>
+                    <strong>Главная истина:</strong> Христос — Сын Божий, обещанный Царь, Которому покорится всё.
+                </p>
+                <div class="final-verse">
+                    «Почтите Сына, чтобы Он не прогневался... Блаженны все, уповающие на Него»<br>
+                    <span style="font-style: normal; font-weight: 600; color: #4a3520;">— Псалом 2:12</span>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="secondary" onclick="goToStep(4)">⬅️ Назад</button>
+                <button onclick="resetAll()">🔄 Пройти заново</button>
+            </div>
+        </div>
+
+        <!-- ФУТЕР -->
+        <div class="footer">
+            <a href="https://vk.com/ykazateli_of_christ" target="_blank" class="studio-link">
+                🕯️ Исследуйте Писание вместе с «Указателями»
+            </a>
+            <span class="small-note">Серия «Христос в Псалмах» — урок 2</span>
+        </div>
+    </div>
+
+    <script>
+        const clickableWords = document.querySelectorAll('.clickable-word');
+        const wordCountSpan = document.getElementById('wordCount');
+        const toStep3Btn = document.getElementById('toStep3');
+        let foundCount = 0;
+        const totalWords = 6;
+
+        clickableWords.forEach(word => {
+            word.addEventListener('click', function() {
+                const wrapper = this.parentElement;
+                const marker = wrapper.querySelector('.marker');
+
+                if (this.classList.contains('found')) {
+                    this.classList.remove('found');
+                    marker.classList.remove('show');
+                    foundCount--;
+                } else {
+                    this.classList.add('found');
+                    marker.classList.add('show');
+                    foundCount++;
+                }
+
+                wordCountSpan.textContent = foundCount;
+
+                if (foundCount === totalWords) {
+                    toStep3Btn.disabled = false;
+                } else {
+                    toStep3Btn.disabled = true;
+                }
+            });
+        });
+
+        let answerVisible = false;
+
+        function toggleAnswer() {
+            const answer = document.getElementById('answerText');
+            const btn = document.querySelector('.reveal-btn');
+
+            if (!answerVisible) {
+                answer.classList.add('show');
+                btn.textContent = '🙈 Скрыть ответ';
+                answerVisible = true;
+            } else {
+                answer.classList.remove('show');
+                btn.textContent = '💡 Показать ответ';
+                answerVisible = false;
+            }
+        }
+
+        function goToStep(stepNumber) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('screen' + stepNumber).classList.add('active');
+            document.querySelector('.app-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function resetAll() {
+            clickableWords.forEach(word => {
+                word.classList.remove('found');
+                const marker = word.parentElement.querySelector('.marker');
+                if (marker) marker.classList.remove('show');
+            });
+            foundCount = 0;
+            wordCountSpan.textContent = '0';
+            toStep3Btn.disabled = true;
+
+            if (answerVisible) {
+                toggleAnswer();
+            }
+
+            goToStep(1);
+        }
+    </script>
+</body>
+</html>
